@@ -1,0 +1,134 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 0 8px;
+  flex-wrap: wrap;
+}
+
+.meta {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.toolHint {
+  background: #10283a;
+  border: 1px solid #1e4a63;
+  color: #a5e9f5;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12.5px;
+  margin-bottom: 8px;
+}
+
+.viewerArea {
+  position: relative;
+  flex: 1;
+  min-height: 420px;
+  background: #060b14;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.viewerCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * The SVG overlay is mounted INSIDE OpenSeadragon's own canvas element.
+ * OpenSeadragon binds its mouse tracker to that element, so a descendant
+ * overlay bubbles pointer events up to the viewer; a sibling overlay would
+ * swallow them and silently break drag-to-pan and wheel-to-zoom.
+ *
+ * It is deliberately NOT `inset: 0`. The element keeps the base image's pixel
+ * dimensions and is placed with a CSS transform (see the viewer component), so
+ * panning and zooming move it without any React re-render.
+ */
+.svgHost {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /*
+   * The transform maps image pixels onto viewer pixels. `overflow: visible`
+   * keeps shapes that extend past the image edge from being clipped mid-drag.
+   */
+  overflow: visible;
+  transform-origin: 0 0;
+  /* The browser can composite the transform on the GPU during pan/zoom. */
+  will-change: transform;
+}
+
+.object {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/*
+ * Transparent layer that captures drawing gestures while a tool is active. It
+ * sits above the SVG so clicks reach the drawing handler, and below the
+ * loading/error banners.
+ */
+.interactionLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+/*
+ * Drag preview. It lives inside the interaction layer, so its coordinates are
+ * element pixels and need no viewport mapping.
+ */
+.dragPreview {
+  position: absolute;
+  background: rgba(34, 211, 238, 0.12);
+  border: 1.5px dashed #22d3ee;
+  pointer-events: none;
+}
+
+.overlayState,
+.overlayError {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: rgba(11, 18, 32, 0.92);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.overlayError {
+  color: var(--danger);
+  border-color: #4b2333;
+  max-width: 80%;
+  text-align: center;
+}

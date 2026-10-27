@@ -1,0 +1,29 @@
+{
+  "name": "deep-zoom-layer-editor",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/web",
+    "apps/api",
+    "packages/shared-types"
+  ],
+  "scripts": {
+    "predev": "npm run build --workspace=@deep-zoom/shared-types",
+    "dev": "concurrently -k -n api,web -c blue,green \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:web": "npm run dev --workspace=@deep-zoom/web",
+    "dev:api": "npm run start:dev --workspace=@deep-zoom/api",
+    "build": "npm run build --workspace=@deep-zoom/shared-types && npm run build --workspace=@deep-zoom/api && npm run build --workspace=@deep-zoom/web",
+    "lint": "npm run lint --workspace=@deep-zoom/api && npm run lint --workspace=@deep-zoom/web",
+    "typecheck": "npm run typecheck --workspace=@deep-zoom/api && npm run typecheck --workspace=@deep-zoom/web",
+    "test": "npm run test --workspace=@deep-zoom/api && npm run test --workspace=@deep-zoom/web",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:all": "npm run test && npm run test:e2e",
+    "test:integration": "npm run test:integration --workspace=@deep-zoom/api"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "concurrently": "^9.1.0",
+    "sharp": "0.34.5"
+  }
+}

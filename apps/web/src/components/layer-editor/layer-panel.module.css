@@ -1,0 +1,163 @@
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.heading {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.addRow {
+  display: flex;
+  gap: 6px;
+}
+
+.addRow input {
+  flex: 1;
+  min-width: 0;
+  background: #0d1626;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  padding: 6px 8px;
+}
+
+.empty {
+  color: var(--text-muted);
+  font-size: 12.5px;
+  margin: 0;
+}
+
+.layerList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.layerItem {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  background: #0d1626;
+}
+
+.layerItemActive {
+  border-color: var(--accent);
+  background: #0f1f2e;
+}
+
+.layerHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.visibilityToggle,
+.lockToggle {
+  background: none;
+  border: none;
+  padding: 0 2px;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.lockToggle {
+  font-size: 11px;
+  filter: grayscale(0.3);
+}
+
+.layerName {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 13px;
+  padding: 2px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.layerName:hover {
+  color: var(--accent);
+}
+
+.nameInput {
+  flex: 1;
+  min-width: 0;
+  background: #0a1420;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  color: var(--text);
+  padding: 2px 6px;
+}
+
+.layerActions {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+  justify-content: flex-end;
+}
+
+.objectList {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 6px 0 0;
+  border-top: 1px dashed rgba(38, 54, 79, 0.9);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.objectItem {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 3px 6px;
+}
+
+.objectItem:hover {
+  background: #152238;
+  color: var(--text);
+}
+
+.objectItemSelected {
+  background: #16324a;
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.objectType {
+  flex: 1;
+}
+
+.newBadge {
+  font-size: 10px;
+  color: var(--warning);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}

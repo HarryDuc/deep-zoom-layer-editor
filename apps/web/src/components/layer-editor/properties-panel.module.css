@@ -1,0 +1,87 @@
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.heading {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.typeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.typeLabel {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.unsaved {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--warning);
+  border: 1px solid #4a3a12;
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+.actionsRow {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.section {
+  border-top: 1px solid rgba(38, 54, 79, 0.7);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sectionHeading {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.pointGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.pointRow {
+  display: grid;
+  grid-template-columns: 28px 1fr 1fr;
+  gap: 6px;
+  align-items: end;
+}
+
+.pointIndex {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding-bottom: 8px;
+}

@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.next/
+.next-e2e/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# Environment (templates are committed, real values are not)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Runtime storage: originals, DZI pyramids, tiles, overlays, temp scratch
+data/
+data-e2e/
+
+# Test artifacts
+coverage/
+test-results/
+playwright-report/
+blob-report/
+tests/e2e/.tmp/
+
+# Editor / OS noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

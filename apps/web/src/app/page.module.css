@@ -1,0 +1,47 @@
+.layout {
+  margin-bottom: 36px;
+}
+
+.listSection {
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+}
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.listHeading {
+  font-size: 15px;
+}
+
+.tableWrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.errorDetail {
+  color: var(--danger);
+  font-size: 11.5px;
+  margin-top: 4px;
+  max-width: 320px;
+}
+
+.rowActions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 18px;
+}
