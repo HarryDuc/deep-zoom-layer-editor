@@ -14,6 +14,7 @@ import { StorageService } from '../storage/storage.service';
 import { DziGeneratorService } from './dzi-generator.service';
 import { TaskManagerService } from './task-manager.service';
 import { APP_CONFIG, AppConfig } from '../config/configuration';
+import { ApplicationError } from '../common/errors/application.error';
 
 const ASSET_ID = new Types.ObjectId('64b0000000000000000000e1').toString();
 
@@ -364,6 +365,50 @@ describe('ImageProcessingService', () => {
 
       const update = imageModel.updateOne.mock.calls[0][1];
       expect(update.$set.errorMessage).toBe('Image processing timed out');
+    });
+
+    it('turns the generator abort code into an explicit timeout message', async () => {
+      // The generator raises a generic PROCESSING_ABORTED when the signal
+      // fires. On its own that says nothing, so the service must recognise the
+      // timeout and name the limit the operator needs to change.
+      const originalsDir = storage.bucketPath('originals');
+      await sharp({
+        create: { width: 32, height: 32, channels: 3, background: { r: 1, g: 1, b: 1 } },
+      })
+        .jpeg()
+        .toFile(path.join(originalsDir, 'assetkey.jpg'));
+
+      // A generator that observes the abort signal the way the real one does
+      // between pyramid levels: it fails as soon as the signal is aborted.
+      dziGenerator.generate.mockImplementation(async (options: { signal?: AbortSignal }) => {
+        for (let tick = 0; tick < 200; tick += 1) {
+          if (options.signal?.aborted) {
+            throw ApplicationError.badRequest('PROCESSING_ABORTED', 'Image processing was aborted');
+          }
+          await new Promise((resolve) => setTimeout(resolve, 5));
+        }
+        throw new Error('the timeout never fired');
+      });
+      imageModel.findById.mockReturnValue(queryReturning(makeAsset()));
+
+      // A short timeout guarantees the signal fires while generate() runs.
+      const fastTimeoutModule = await Test.createTestingModule({
+        providers: [
+          ImageProcessingService,
+          { provide: getModelToken(ImageAsset.name), useValue: imageModel },
+          { provide: APP_CONFIG, useValue: { ...config, imageProcessingTimeoutMs: 20 } },
+          { provide: StorageService, useValue: storage },
+          { provide: DziGeneratorService, useValue: dziGenerator },
+          { provide: TaskManagerService, useValue: tasks },
+        ],
+      }).compile();
+      const service = fastTimeoutModule.get(ImageProcessingService);
+
+      await service.process(ASSET_ID);
+
+      const update = imageModel.updateOne.mock.calls[0][1];
+      expect(update.$set.errorMessage).toMatch(/timed out after \d+s/);
+      expect(update.$set.errorMessage).toContain('too large to process');
     });
   });
 });

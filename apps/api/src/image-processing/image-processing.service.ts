@@ -17,11 +17,6 @@ export const INTERRUPTED_MESSAGE =
 @Injectable()
 export class ImageProcessingService implements OnModuleInit {
   private readonly logger = new Logger(ImageProcessingService.name);
-  /**
-   * Set when the processing timeout fired, so the failure message can say
-   * *why* the run was aborted instead of the generic "aborted".
-   */
-  private timedOut = false;
 
   constructor(
     @InjectModel(ImageAsset.name)
@@ -107,9 +102,11 @@ export class ImageProcessingService implements OnModuleInit {
 
     const jobDir = path.join(this.storage.bucketPath('tmp'), `job-${asset.storageKey}`);
     const controller = new AbortController();
-    this.timedOut = false;
+    // Local to this job: an instance field would be shared by every concurrent
+    // job and could attribute one job's timeout to another.
+    let timedOut = false;
     const timeout = setTimeout(() => {
-      this.timedOut = true;
+      timedOut = true;
       controller.abort();
     }, this.config.imageProcessingTimeoutMs);
     const startedAt = Date.now();
@@ -180,16 +177,12 @@ export class ImageProcessingService implements OnModuleInit {
           `${((Date.now() - startedAt) / 1000).toFixed(1)}s`,
       );
     } catch (error) {
-      const message = this.describeError(error);
+      const message = this.describeError(error, timedOut);
       const elapsed = (Date.now() - startedAt) / 1000;
 
-      // The timeout is the most common failure, and the raw "aborted" message
-      // says nothing about *why*. Naming the limit and the elapsed time turns
-      // it into an actionable diagnosis.
-      const isTimeout = controller.signal.aborted;
       this.logger.error(
         `Asset ${imageAssetId} failed after ${elapsed.toFixed(1)}s: ${message}` +
-          (isTimeout
+          (timedOut
             ? ` — the processing timeout of ${Math.round(
                 this.config.imageProcessingTimeoutMs / 1000,
               )}s was reached. Raise IMAGE_PROCESSING_TIMEOUT_MS or lower MAX_IMAGE_PIXELS.`
@@ -253,9 +246,9 @@ export class ImageProcessingService implements OnModuleInit {
    * which tells the user nothing. When the abort came from the timeout it is
    * rewritten into an explicit, actionable message.
    */
-  private describeError(error: unknown): string {
+  private describeError(error: unknown, timedOut = false): string {
     if (error instanceof ApplicationError) {
-      if (error.code === 'PROCESSING_ABORTED' && this.timedOut) {
+      if (error.code === 'PROCESSING_ABORTED' && timedOut) {
         return (
           `Image processing timed out after ${Math.round(
             this.config.imageProcessingTimeoutMs / 1000,
